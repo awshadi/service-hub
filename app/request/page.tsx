@@ -1,167 +1,250 @@
 "use client";
 
+import { useState } from "react";
+import Link from "next/link";          // ✅ add this import
 import {
   FaArrowLeft,
   FaMapMarkerAlt,
-  FaCalendarAlt,
-  FaTag,
-  FaTrash,
+  FaCheck,
+  FaTools,
 } from "react-icons/fa";
 
 export default function Home() {
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    category: "",
+    location: "",
+    name: "",
+    email: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("/api/jobs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await response.json();
+      if (data.success) {
+        alert("🎉 Job Posted Successfully!");
+        setFormData({
+          title: "",
+          description: "",
+          category: "",
+          location: "",
+          name: "",
+          email: "",
+        });
+      } else {
+        alert("Something went wrong");
+      }
+    } catch (error) {
+      console.log(error);
+      alert("Server Error");
+    }
+  };
+
+  const handleCancel = () => {
+    setFormData({
+      title: "",
+      description: "",
+      category: "",
+      location: "",
+      name: "",
+      email: "",
+    });
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-100 via-blue-50 to-cyan-100">
-      
+    <div className="min-h-screen bg-gradient-to-br from-cyan-100 via-sky-50 to-blue-200">
       {/* Navbar */}
-      <nav className="bg-gradient-to-r from-sky-600 to-blue-700 shadow-lg">
+      <nav className="bg-gradient-to-r from-sky-600 via-blue-700 to-cyan-600 shadow-xl">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-          
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <div className="bg-white text-sky-600 p-2 rounded-xl font-bold">
-              🔧
+            <div className="bg-white text-blue-700 p-3 rounded-2xl text-xl shadow-lg">
+              <FaTools />
             </div>
-
-            <h1 className="text-2xl font-bold text-white">
-              Service Hub
-            </h1>
+            <div>
+              <h1 className="text-2xl font-extrabold text-white">Service Hub</h1>
+              <p className="text-cyan-100 text-xs">Find trusted local services</p>
+            </div>
           </div>
 
           {/* Menu */}
-          <div className="flex items-center gap-5">
-            <button className="text-white hover:text-cyan-200 transition">
+          <div className="hidden md:flex items-center gap-4">
+            <Link href="/" className="text-white font-medium hover:text-cyan-200 transition">
               Dashboard
-            </button>
+            </Link>
 
-            <button className="text-white hover:text-cyan-200 transition">
+
+
+            
+            <Link href="/request" className="text-white font-medium hover:text-cyan-200 transition">
               Requests
-            </button>
-
-            <button className="bg-white text-blue-700 px-5 py-2 rounded-xl font-semibold hover:bg-cyan-100 transition">
-              + Post Job
-            </button>
+            </Link>
+            <Link href="/details" className="text-white font-medium hover:text-cyan-200 transition">
+              Details
+            </Link>
+            <Link href="/request">
+              <button className="bg-white text-blue-700 px-4 py-2 rounded-xl font-bold hover:bg-cyan-100 transition shadow-md">
+                + Post Job
+              </button>
+            </Link>
           </div>
         </div>
       </nav>
 
       {/* Main */}
-      <div className="max-w-4xl mx-auto px-6 py-10">
-
-        {/* Back */}
-        <button className="flex items-center gap-2 text-blue-700 font-medium hover:text-sky-500 transition mb-6">
+      <div className="max-w-2xl mx-auto px-4 py-6">
+        {/* Back Button as Link */}
+        <Link
+          href="/"
+          className="flex items-center gap-2 text-blue-800 font-semibold hover:text-cyan-600 transition mb-5"
+        >
           <FaArrowLeft />
           Back to Dashboard
-        </button>
+        </Link>
 
-        {/* Card */}
-        <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl overflow-hidden border border-white">
+        {/* Form Card (unchanged) */}
+        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-200">
+          <div className="bg-gradient-to-r from-sky-500 via-blue-600 to-cyan-500 p-6 text-white">
+            <h1 className="text-3xl font-extrabold">Post a Service Request</h1>
+            <p className="mt-2 text-blue-100 text-sm">
+              Describe your issue and connect with professionals instantly.
+            </p>
+          </div>
 
-          {/* Content */}
-          <div className="p-8">
-
+          <form onSubmit={handleSubmit} className="p-6">
+            <h2 className="text-lg font-bold text-gray-800 uppercase mb-6 border-l-4 border-blue-500 pl-3">
+              Job Details
+            </h2>
             {/* Title */}
-            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-              
-              <h1 className="text-4xl font-bold text-gray-800 leading-tight">
-                Need a plumber for a leaking kitchen tap
-              </h1>
-
-              <span className="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-bold h-fit">
-                Open
-              </span>
+            <div className="mb-5">
+              <label className="block text-gray-800 font-bold mb-2">
+                Job Title <span className="text-red-500 ml-1">*</span>
+              </label>
+              <input
+                type="text"
+                name="title"
+                value={formData.title}
+                onChange={handleChange}
+                placeholder="Need a plumber for leaking tap"
+                required
+                className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 bg-gray-50 text-black placeholder:text-black focus:outline-none focus:ring-4 focus:ring-sky-200"
+              />
+            </div>
+            {/* Description */}
+            <div className="mb-5">
+              <label className="block text-gray-800 font-bold mb-2">
+                Description <span className="text-red-500 ml-1">*</span>
+              </label>
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                placeholder="Describe the issue in detail..."
+                required
+                rows={4}
+                className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 bg-gray-50 text-black placeholder:text-black focus:outline-none focus:ring-4 focus:ring-sky-200 resize-none"
+              />
+            </div>
+            {/* Category + Location */}
+            <div className="grid md:grid-cols-2 gap-5 mb-6">
+              <div>
+                <label className="block text-gray-800 font-bold mb-2">Category</label>
+                <select
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 bg-gray-50 text-black focus:outline-none focus:ring-4 focus:ring-cyan-200"
+                >
+                  <option value="">Select category</option>
+                  <option value="Plumbing">Plumbing</option>
+                  <option value="Electrical">Electrical</option>
+                  <option value="Painting">Painting</option>
+                  <option value="Joinery">Joinery</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-gray-800 font-bold mb-2">
+                  Location <span className="text-red-500 ml-1">*</span>
+                </label>
+                <div className="flex items-center bg-gray-50 border-2 border-gray-200 rounded-2xl px-3">
+                  <FaMapMarkerAlt className="text-sky-500 text-lg" />
+                  <input
+                    type="text"
+                    name="location"
+                    value={formData.location}
+                    onChange={handleChange}
+                    placeholder="e.g. Colombo"
+                    required
+                    className="w-full px-3 py-3 bg-transparent outline-none text-black placeholder:text-black"
+                  />
+                </div>
+              </div>
             </div>
 
-            {/* Info */}
-            <div className="flex flex-wrap gap-5 mt-6 text-gray-600">
-
-              <div className="flex items-center gap-2 bg-sky-100 px-4 py-2 rounded-xl">
-                <FaTag className="text-sky-600" />
-                Plumbing
-              </div>
-
-              <div className="flex items-center gap-2 bg-cyan-100 px-4 py-2 rounded-xl">
-                <FaMapMarkerAlt className="text-cyan-600" />
-                Glasgow
-              </div>
-
-              <div className="flex items-center gap-2 bg-blue-100 px-4 py-2 rounded-xl">
-                <FaCalendarAlt className="text-blue-600" />
-                Posted Oct 24, 2023
-              </div>
-            </div>
-
-            {/* Divider */}
             <div className="border-t border-gray-200 my-8"></div>
 
-            {/* Description */}
-            <div>
-              <h2 className="text-lg font-bold text-gray-800 mb-4 uppercase tracking-wide">
-                Description
-              </h2>
-
-              <p className="text-gray-700 leading-8">
-                Water is dripping constantly from the kitchen sink.
-                Need it fixed as soon as possible before it causes
-                water damage. I have tried tightening the main nut
-                but it did not help.
-              </p>
-
-              <p className="text-gray-700 leading-8 mt-5">
-                Need to bring your own tools. Usually home after
-                4 PM on weekdays.
-              </p>
-            </div>
-
-            {/* Contact */}
-            <div className="mt-10 bg-gradient-to-r from-sky-50 to-cyan-50 border border-sky-100 rounded-2xl p-6 shadow-sm">
-
-              <h3 className="text-gray-700 font-bold uppercase text-sm mb-5">
-                Contact Person
-              </h3>
-
-              <div className="flex items-center gap-5">
-                
-                {/* Avatar */}
-                <div className="w-16 h-16 rounded-full bg-gradient-to-r from-sky-500 to-blue-600 text-white flex items-center justify-center text-2xl font-bold shadow-lg">
-                  J
-                </div>
-
-                {/* Details */}
-                <div>
-                  <h4 className="text-xl font-bold text-gray-800">
-                    John Smith
-                  </h4>
-
-                  <p className="text-sky-600 font-medium">
-                    john.smith@example.com
-                  </p>
-                </div>
+            <h2 className="text-lg font-bold text-gray-800 uppercase mb-6 border-l-4 border-cyan-500 pl-3">
+              Contact Information
+            </h2>
+            <div className="grid md:grid-cols-2 gap-5">
+              <div>
+                <label className="block text-gray-800 font-bold mb-2">Your Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="John Doe"
+                  className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 bg-gray-50 text-black placeholder:text-black focus:outline-none focus:ring-4 focus:ring-sky-200"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-800 font-bold mb-2">
+                  Email Address <span className="text-red-500 ml-1">*</span>
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="john@example.com"
+                  required
+                  className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 bg-gray-50 text-black placeholder:text-black focus:outline-none focus:ring-4 focus:ring-sky-200"
+                />
               </div>
             </div>
-          </div>
 
-          {/* Footer */}
-          <div className="bg-gradient-to-r from-sky-50 to-blue-50 px-8 py-6 flex flex-col md:flex-row justify-between items-center gap-5">
-
-            {/* Status */}
-            <div className="flex items-center gap-4">
-              <label className="font-semibold text-gray-700">
-                Update Status:
-              </label>
-
-              <select className="px-5 py-3 rounded-xl border border-gray-300 shadow-sm outline-none focus:ring-2 focus:ring-sky-400">
-                <option>Open</option>
-                <option>In Progress</option>
-                <option>Closed</option>
-              </select>
+            <div className="flex flex-col md:flex-row justify-end gap-3 mt-10">
+              <button
+                type="button"
+                onClick={handleCancel}
+                className="px-6 py-3 rounded-2xl border-2 border-gray-300 bg-gray-100 text-black font-bold hover:bg-gray-200 transition"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="bg-gradient-to-r from-sky-500 via-blue-600 to-cyan-500 text-white px-6 py-3 rounded-2xl font-bold flex items-center justify-center gap-3 hover:scale-105 transition shadow-xl"
+              >
+                <FaCheck />
+                Post Job Request
+              </button>
             </div>
-
-            {/* Delete */}
-            <button className="bg-gradient-to-r from-red-500 to-pink-500 text-white px-6 py-3 rounded-2xl font-semibold flex items-center gap-2 hover:scale-105 transition">
-              <FaTrash />
-              Delete Job
-            </button>
-          </div>
+          </form>
         </div>
       </div>
     </div>
