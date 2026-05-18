@@ -53,7 +53,7 @@ export default function Home() {
           <div className="flex items-center gap-5">
 
             <Link
-              href="/dashboard"
+              href="/"
               className="text-white font-semibold hover:text-cyan-200 transition duration-300"
             >
               Dashboard
@@ -68,7 +68,7 @@ export default function Home() {
 
 
             <Link
-              href="/requests"
+              href="/request"
               className="text-white font-semibold hover:text-cyan-200 transition duration-300"
             >
               Requests
@@ -76,12 +76,7 @@ export default function Home() {
 
           
 
-            <Link
-              href="/post-job"
-              className="bg-white text-blue-700 px-5 py-2 rounded-2xl font-bold hover:bg-cyan-100 transition duration-300 shadow-lg"
-            >
-              + Post Job
-            </Link>
+            
 
           </div>
 

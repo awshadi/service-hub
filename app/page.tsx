@@ -106,12 +106,7 @@ export default function Home() {
               >
                 Requests
               </Link>
-              <Link href="/request">
-                <button className="ml-2 flex items-center gap-2 bg-white text-indigo-700 px-5 py-2.5 rounded-xl font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200">
-                  <FaPlus className="text-sm" />
-                  Post Job
-                </button>
-              </Link>
+              
             </div>
           </div>
         </div>

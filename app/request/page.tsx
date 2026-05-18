@@ -86,21 +86,17 @@ export default function Home() {
             <Link href="/" className="text-white font-medium hover:text-cyan-200 transition">
               Dashboard
             </Link>
-
+  <Link href="/details" className="text-white font-medium hover:text-cyan-200 transition">
+              Details
+            </Link>
 
 
             
             <Link href="/request" className="text-white font-medium hover:text-cyan-200 transition">
               Requests
             </Link>
-            <Link href="/details" className="text-white font-medium hover:text-cyan-200 transition">
-              Details
-            </Link>
-            <Link href="/request">
-              <button className="bg-white text-blue-700 px-4 py-2 rounded-xl font-bold hover:bg-cyan-100 transition shadow-md">
-                + Post Job
-              </button>
-            </Link>
+            
+           
           </div>
         </div>
       </nav>
